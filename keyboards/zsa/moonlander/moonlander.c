@@ -18,6 +18,10 @@
 
 #include QMK_KEYBOARD_H
 
+#ifdef ACTIVE_LAYER_INDICATOR_ENABLE
+#include "layout_indicator.h"
+#endif
+
 #ifdef COMMUNITY_MODULE_ORYX_ENABLE
 #    include "oryx.h"
 #endif // COMMUNITY_MODULE_ORYX_ENABLE
@@ -213,6 +217,15 @@ layer_state_t layer_state_set_kb(layer_state_t state) {
 #    if !defined(CAPS_LOCK_STATUS)
     STATUS_LED_6(LED_6);
 #    endif
+#endif
+#ifdef ACTIVE_LAYER_INDICATOR_ENABLE
+    if (!get_is_keybard_active() && get_is_layout_indicator_active()) {
+        uint8_t buffer[RAW_EPSIZE] = {0};
+        buffer[0] = ACTIVE_LAYER_INDICATOR_MESSAGE;
+        buffer[1] = active_layer_push;
+        buffer[2] = layer;
+        raw_hid_send(buffer, RAW_EPSIZE);
+    }
 #endif
 
     return state;
@@ -469,3 +482,21 @@ void eeconfig_init_kb(void) { // EEPROM is getting reset!
     eeconfig_update_kb(keyboard_config.raw);
     eeconfig_init_user();
 }
+
+#ifdef ACTIVE_LAYER_INDICATOR_ENABLE
+void raw_hid_receive_kb(uint8_t *data, uint8_t length) {
+    if (data[0] == ACTIVE_LAYER_INDICATOR_MESSAGE) {
+        switch(data[1]) {
+            case active_layer_refresh:
+                if (!get_is_keybard_active()) {
+                    refresh_layout_indicator_timer();
+                    data[2] = 1;
+                } else {
+                    data[2] = 0;
+                    disable_layout_indicator();
+                }
+                break;
+        }
+    } 
+}
+#endif
