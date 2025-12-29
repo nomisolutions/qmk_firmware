@@ -129,6 +129,8 @@ via*.json
 !/keyboards/zsa/
 !/keyboards/zsa/**
 /keyboards/zsa/**/keymaps/**
+!/keyboards/zsa/**/keymaps/active_layer_indicator
+!/keyboards/zsa/**/keymaps/active_layer_indicator/**
 !/keyboards/zsa/**/keymaps/default
 !/keyboards/zsa/**/keymaps/default/**
 !/keyboards/zsa/**/keymaps/oryx
