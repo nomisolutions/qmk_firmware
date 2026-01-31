@@ -40,7 +40,7 @@ jobs:
       if: matrix.keymap == 'klayi'
       uses: actions/upload-artifact@v4
       with:
-        name: firmware-${{ matrix.keyboard == 'zsa/moonlander/reva' && 'reva' || 'revb' }}
+        name: firmware-klayi-${{ matrix.keyboard == 'zsa/moonlander/reva' && 'reva' || 'revb' }}
         path: |
           .build/zsa_moonlander_*_klayi.bin
           .build/zsa_moonlander_*_klayi.hex
