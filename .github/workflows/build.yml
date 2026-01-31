@@ -17,13 +17,11 @@ jobs:
       matrix:
         include:
           - keyboard: zsa/moonlander/reva
-            keymap: oryx
-          - keyboard: zsa/moonlander/revb
-            keymap: oryx
-          - keyboard: zsa/moonlander/reva
             keymap: klayi
+            firmware: zsa_moonlander_reva_klayi
           - keyboard: zsa/moonlander/revb
             keymap: klayi
+            firmware: zsa_moonlander_revb_klayi
 
     steps:
     - name: Checkout QMK Firmware
@@ -41,8 +39,10 @@ jobs:
         qmk compile -kb ${{ matrix.keyboard }} -km ${{ matrix.keymap }} -e SKIP_GIT=1
 
     - name: Upload firmware
-      if: matrix.keymap == 'klayi'
       uses: actions/upload-artifact@v4
       with:
-        name: firmware-${{ matrix.keyboard == 'zsa/moonlander/reva' && 'reva' || 'revb' }}
-        path: .build/*.bin
+        name: ${{ matrix.firmware }}
+        path: |
+          .build/${{ matrix.firmware }}.bin
+          .build/${{ matrix.firmware }}.hex
+        if-no-files-found: error
