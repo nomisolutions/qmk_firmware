@@ -17,10 +17,6 @@ jobs:
       matrix:
         include:
           - keyboard: zsa/moonlander/reva
-            keymap: oryx
-          - keyboard: zsa/moonlander/revb
-            keymap: oryx
-          - keyboard: zsa/moonlander/reva
             keymap: klayi
           - keyboard: zsa/moonlander/revb
             keymap: klayi
@@ -40,20 +36,12 @@ jobs:
       run: |
         qmk compile -kb ${{ matrix.keyboard }} -km ${{ matrix.keymap }} -e SKIP_GIT=1
 
-    - name: List build output
-      if: matrix.keymap == 'klayi'
-      run: |
-        echo "Root directory:"
-        ls -la *.bin *.hex 2>/dev/null || echo "  No files in root"
-        echo ".build directory:"
-        ls -la .build/*.bin .build/*.hex 2>/dev/null || echo "  No files in .build"
-
     - name: Upload firmware
       if: matrix.keymap == 'klayi'
       uses: actions/upload-artifact@v4
       with:
         name: firmware-${{ matrix.keyboard == 'zsa/moonlander/reva' && 'reva' || 'revb' }}
         path: |
-          zsa_moonlander_*_klayi.bin
-          zsa_moonlander_*_klayi.hex
+          .build/zsa_moonlander_*_klayi.bin
+          .build/zsa_moonlander_*_klayi.hex
         if-no-files-found: error
