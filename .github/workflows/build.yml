@@ -19,6 +19,7 @@ jobs:
         keymap:
           - default
           - oryx
+          - klayi
 
     steps:
     - name: Checkout QMK Firmware

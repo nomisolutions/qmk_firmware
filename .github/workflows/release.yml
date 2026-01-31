@@ -1,0 +1,50 @@
+name: Release firmware
+
+on:
+  push:
+    branches:
+      - klayi
+    paths-ignore:
+      - '**.md'
+
+jobs:
+  release-firmware:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        submodules: true
+
+    - name: Calculate next version
+      id: version
+      uses: PaulHatch/semantic-version@v5
+      with:
+        tag_prefix: v
+        major_pattern: "(BREAKING CHANGE)"
+        minor_pattern: "(feat)"
+        version_format: "${major}.${minor}.${patch}"
+
+    - name: Build firmware
+      uses: docker://qmkfm/qmk_cli
+      with:
+        args: qmk compile -kb zsa/moonlander -km klayi -e SKIP_GIT=1
+
+    - name: Prepare release assets
+      run: |
+        mkdir -p release
+        cp .build/*.bin .build/*.hex .build/*.uf2 release/ 2>/dev/null || true
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: v${{ steps.version.outputs.version }}
+        name: v${{ steps.version.outputs.version }}
+        generate_release_notes: true
+        files: release/*
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
