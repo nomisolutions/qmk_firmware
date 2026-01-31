@@ -29,10 +29,12 @@ jobs:
         minor_pattern: "(feat)"
         version_format: "${major}.${minor}.${patch}"
 
+    - name: Setup QMK
+      uses: ./.github/actions/setup-qmk
+
     - name: Build firmware
-      uses: docker://qmkfm/qmk_cli
-      with:
-        args: qmk compile -kb zsa/moonlander -km klayi -e SKIP_GIT=1
+      run: |
+        qmk compile -kb zsa/moonlander -km klayi -e SKIP_GIT=1
 
     - name: Prepare release assets
       run: |

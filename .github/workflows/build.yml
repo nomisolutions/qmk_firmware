@@ -12,7 +12,6 @@ on:
 jobs:
   build-firmware:
     runs-on: ubuntu-latest
-    container: qmkfm/qmk_cli
     strategy:
       fail-fast: false
       matrix:
@@ -28,6 +27,11 @@ jobs:
         fetch-depth: 1
         persist-credentials: false
         submodules: true
+
+    - name: Setup QMK
+      uses: ./.github/actions/setup-qmk
+      with:
+        include-avr: 'true'
 
     - name: Build
       id: build
