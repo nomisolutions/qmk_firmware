@@ -45,4 +45,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: firmware-${{ matrix.keyboard == 'zsa/moonlander/reva' && 'reva' || 'revb' }}
-        path: .build/*.bin
+        path: |
+          zsa_moonlander_*_klayi.bin
+          zsa_moonlander_*_klayi.hex
+        if-no-files-found: error
