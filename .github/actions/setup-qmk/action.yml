@@ -1,0 +1,31 @@
+name: Setup QMK
+description: Install Python, ARM/AVR toolchains, and QMK CLI
+
+inputs:
+  python-version:
+    description: Python version to use
+    default: '3.11'
+  include-avr:
+    description: Install AVR toolchain (needed for ErgoDox EZ, Planck EZ)
+    default: 'false'
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Install ARM toolchain and QMK CLI
+      shell: bash
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gcc-arm-none-eabi binutils-arm-none-eabi libnewlib-arm-none-eabi dfu-util
+        pip install qmk
+
+    - name: Install AVR toolchain
+      if: inputs.include-avr == 'true'
+      shell: bash
+      run: |
+        sudo apt-get install -y gcc-avr avr-libc binutils-avr
