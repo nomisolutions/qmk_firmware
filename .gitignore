@@ -135,3 +135,4 @@ via*.json
 !/keyboards/zsa/**/keymaps/oryx/**
 !/keyboards/zsa/**/keymaps/klayi
 !/keyboards/zsa/**/keymaps/klayi/**
+.vscode/settings.json
